@@ -3,29 +3,7 @@ import { TouchableWithoutFeedback, View, Text, TouchableOpacity, StyleSheet } fr
 
 import { Calendar, LocaleConfig } from "react-native-calendars"; 
 
-export default function CalendarModal({ setVisible, handleDate }: any){
-    const [dateNow, setDateNow] = useState(new Date())
-    const [markedDates, setMarkedDates] = useState({});
-
-    function handleOnDayPress(date){
-        
-        setDateNow(new Date(date.dateString));
-
-        let markedDay = {};
-
-        markedDay[date.dateString] = {
-            selected: true,
-            selectedColor: "#3B82F6",
-            textColor: "#FFF"
-        }
-
-        setMarkedDates(markedDay)
-    }
-
-    function handleGetDate(){
-        handleDate(dateNow);
-        setVisible();
-    }
+export default function CalendarModal({ setVisible }){
 
     return(
         <View style={styles.container}>
@@ -35,17 +13,7 @@ export default function CalendarModal({ setVisible, handleDate }: any){
             </TouchableWithoutFeedback>
             
             <View style={styles.modalContent}>
-                <Calendar
-                    onDayPress={handleOnDayPress}
-                    markedDates={markedDates}
-                    enableSwipeMonths={true}
-                    theme={{
-                        todayTextColor: "#af1e31",
-                        selectedDayBackgroundColor: "#3B82F6",
-                    }}
-                />
-
-                <TouchableOpacity style={styles.dateButton} onPress={handleGetDate}>
+                <TouchableOpacity style={styles.dateButton}>
                     <Text style={styles.dateButtonText}>Get date</Text>
                 </TouchableOpacity>
             </View>
