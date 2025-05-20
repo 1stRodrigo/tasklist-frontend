@@ -10,6 +10,7 @@ import {
     Platform,
     ScrollView,
     Modal,
+    FlatList
 } from "react-native"
 
 import { api } from "../../services/api";
@@ -38,7 +39,49 @@ export default function New(){
     const [dateOfTask, setDateOfTask] = useState("");
     const [showPicker, setShowPicker] = useState(false);
 
+    const [tags, setTags] = useState([]);
+    const [selectedTags, setSelectedTags] = useState([]);
+    const [loading, setLoading] = useState(false);
+
     const [selectedValuePriority, setSelectedValuePriority] = useState(null)
+
+    useEffect( () => {
+
+        getTags()
+
+    }, [modalVisible])
+
+        
+    //GET TAGS
+    async function getTags() {
+        try {
+            //RECEIVE LIST
+            const response = await api.get('/tag')
+            
+            //LIST ALL TAGS BY USER (WARNING: includes data: id, name, userId)
+            const tagsByUser = response.data.filter(
+                (tag) => tag.userId === user.id
+            );
+            setTags(tagsByUser)
+            
+            //LIST NAME TAGS
+            const tagName = tagsByUser.map((tag) => tag.name)
+            console.log(tagName)
+        }
+        catch {
+        console.error('Erro ao buscar tags:', Error);
+        }
+    }
+
+    const renderTags = ({ item }) => (
+    <View style={styles.container}>
+        <View>
+            <TouchableOpacity>
+                <Text>{item.name}</Text>
+            </TouchableOpacity>
+        </View>
+    </View>
+    );
 
     //FUNCTIONS DATE
     const toggleDatePicker = () => {
@@ -98,32 +141,33 @@ export default function New(){
             
         }
         
-
-    // TAG FUNCTIONS
-    function toggleSelectTag(){
-
-    }
-
-
-
-
     }
     return(
         <SafeAreaView style={styles.container}>
             <ScrollView>
                     <View style={styles.header}>
-                        <Text style={styles.titles}>Add Task</Text>
+                        <View style={{flexDirection: "row", alignItems: "center", gap: 15}}>
+                            
+                            <TouchableOpacity>
+                                <Ionicons name="arrow-back-outline" size={26}/>
+                            </TouchableOpacity>
+                            
+                            <Text style={styles.titles}>Add Task</Text>
+                        </View>
+
+                        <View>
+                            <TouchableOpacity>
+                               <Text style={styles.textButtonDefault}>Cancel</Text> 
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                     <View>
                         <View>
-                            <View>
-                                <Text style={styles.textInputLabel}>Name</Text>
-                            </View>
 
                             <View style={styles.inputContainer}>
                                 <TextInput
-                                placeholder="Example"
+                                placeholder="Task name"
                                 style={styles.inputText}
                                 onChangeText={setTitle}
                                 ></TextInput>
@@ -131,18 +175,75 @@ export default function New(){
                         </View>
 
                         <View>
-                                <View>
-                                    <Text style={styles.textInputLabel}>Description</Text>
-                                </View>
 
                                 <View style={styles.inputContainer}>
                                     <TextInput
-                                    placeholder="Example"
-                                    style={styles.inputText}
+                                    multiline={true}
+                                    maxLength={300}
+                                    placeholder="Details"
+                                    style={[styles.inputText, styles.inputDetails]}
                                     onChangeText={setDescription}
                                     >
                                     </TextInput>
                                 </View>
+
+                                <View>
+
+                                    <View style={styles.inputContainer}>
+
+                                        <View style={styles.dateContainer}>
+                                    
+                                            {showPicker && (
+                                                <DateTimePicker
+                                                mode="date"
+                                                display="spinner"
+                                                value={date}
+                                                onChange={onChangePicker}
+                                                minimumDate={new Date('1-1-2025')}
+                                                />
+                                            )}
+
+                                            {showPicker && Platform.OS === "ios" && (
+                                                <View
+                                                style={{ 
+                                                    flexDirection: "row", 
+                                                    justifyContent: "space-around"
+                                            }}
+                                            >
+                                            <TouchableOpacity style={{margin: 5}} onPress={toggleDatePicker}>
+                                                <Text>Cancel</Text>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={confirmIOSDate}>
+                                                <Text>Confirm</Text>
+                                            </TouchableOpacity>
+                                        </View>    
+                                    )}
+
+
+                                    {!showPicker && (
+                                        <Pressable
+                                            onPress={toggleDatePicker}
+                                        >
+                                            <TextInput
+                                                placeholder="Mon Jun 21 2003"
+                                                value={dateOfTask}
+                                                onChangeText={setDateOfTask}
+                                                placeholderTextColor="rgb(54, 54, 56)"
+                                                editable={false}
+                                                onPressIn={toggleDatePicker}
+                                            />
+                                        </Pressable>
+                                    )}
+
+                                    <TouchableOpacity onPress={toggleDatePicker}>
+                                        <Ionicons name="chevron-down-outline" size={26} color="#F5F7FA " />
+                                    </TouchableOpacity>
+
+
+                                    </View>
+                                </View>
+
+                                
 
                                 <View>
 
@@ -151,35 +252,12 @@ export default function New(){
                                 onRequestClose={() => setModalVisible(!modalVisible)}
                                 animationType="slide"
                                 >
-                                    <ScrollView>
-                                        <View style={styles.centeredView}>
-
-                                            <View>
-                                                <View>
-                                                    {/* Button select tag */}
-                                                    <View>
-                                                        <TouchableOpacity>
-                                                            <Text style={styles.textInputLabel}>Tag 1</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    <View>
-                                                        <TouchableOpacity>
-                                                            <Text style={styles.textInputLabel}>Tag 1</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    <View>
-                                                        <TouchableOpacity>
-                                                            <Text style={styles.textInputLabel}>Tag 1</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                    <View>
-                                                        <TouchableOpacity>
-                                                            <Text style={styles.textInputLabel}>Tag 1</Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                </View>
-
-                                            </View>
+                                        <FlatList
+                                        data={tags}
+                                        keyExtractor={(item) => item.id}
+                                        renderItem={renderTags}
+                                        />
+                                        
 
                                             <View style={styles.containerAddOrCancel}>
                                                 <View style={styles.containerConfirmButton}>    
@@ -204,77 +282,18 @@ export default function New(){
                                                     </TouchableOpacity>
                                                 </View>
                                             </View>
-                                        </View>
-                                    </ScrollView>
                                 </Modal>
 
-
-                                <TouchableOpacity
-                                style={styles.buttonTag}
-                                onPress={() => setModalVisible(true)}>
-                                    <Text>Show tags</Text>
-                                </TouchableOpacity>
+                                <View>
+                                    <TouchableOpacity
+                                    style={styles.buttonTag}
+                                    onPress={() => setModalVisible(true)}>
+                                        <Text style={styles.inputText}>Tags</Text>
+                                    </TouchableOpacity>
+                                </View>
                         </View>
                     </View>
-
-                        <View>
-                            <View>
-                                <Text style={styles.textInputLabel}>Date</Text>
-                            </View>
-
-                            <View style={styles.inputContainer}>
-
-                                <View style={styles.dateContainer}>
-                            
-                                    {showPicker && (
-                                        <DateTimePicker
-                                        mode="date"
-                                        display="spinner"
-                                        value={date}
-                                        onChange={onChangePicker}
-                                        minimumDate={new Date('1-1-2025')}
-                                        />
-                                    )}
-
-                                    {showPicker && Platform.OS === "ios" && (
-                                        <View
-                                        style={{ 
-                                            flexDirection: "row", 
-                                            justifyContent: "space-around"
-                                    }}
-                                    >
-                                    <TouchableOpacity style={{margin: 5}} onPress={toggleDatePicker}>
-                                        <Text>Cancel</Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity onPress={confirmIOSDate}>
-                                        <Text>Confirm</Text>
-                                    </TouchableOpacity>
-                                </View>    
-                            )}
-
-
-                            {!showPicker && (
-                                <Pressable
-                                    onPress={toggleDatePicker}
-                                >
-                                    <TextInput
-                                        placeholder="Mon Jun 21 2003"
-                                        value={dateOfTask}
-                                        onChangeText={setDateOfTask}
-                                        placeholderTextColor="#718096"
-                                        editable={false}
-                                        onPressIn={toggleDatePicker}
-                                    />
-                                </Pressable>
-                            )}
-
-                            <TouchableOpacity onPress={toggleDatePicker}>
-                                <Ionicons name="chevron-down-outline" size={26} color="#F5F7FA " />
-                            </TouchableOpacity>
-
-
-                            </View>
-                        </View>               
+               
 
                         <View>
                             <View>
@@ -303,14 +322,7 @@ export default function New(){
                 </View>                     
 
                     <View style={styles.containerAddOrCancel}>
-                        <View style={styles.containerConfirmButton}>
-                            <TouchableOpacity
-                                style={styles.cancelButton}
-                                onPress={navigation.goBack}
-                            >
-                                <Text style={styles.cancelButtonText}>Cancel</Text>
-                            </TouchableOpacity>
-                        
+                        <View style={styles.containerConfirmButton}>        
                             <TouchableOpacity
                                 style={styles.addButton}
                                 onPress={sendTask}
@@ -330,28 +342,40 @@ export default function New(){
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        margin: 20,
-        backgroundColor: "#F5F7FA"
+        padding: 20,
+        backgroundColor: "#FFF"
     },
     header:{
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         marginTop: 25,
         marginLeft: 6,
-        marginBottom: 20
+        marginBottom: 22
     },
+        
+    //DEFAULT STYLES
     titles: {
-        fontSize: 32,
+        fontSize: 30,
         fontWeight: 700 
     },
+
+    textButtonDefault:{
+        color: "rgb(0, 122, 255)",
+        fontSize: 20,
+        fontWeight: 400,
+    },
+
     textInputLabel:{
         fontSize: 19,
         fontWeight: 400,
     },
     inputContainer:{
-        backgroundColor: "#FFF",
+        backgroundColor: "#F5F7FA",
         borderRadius: 11,
         
-        marginTop: 8,
-        marginBottom: 28,
+        //marginTop: 8,
+        marginBottom: 15,
         
         paddingRight: 7,
         paddingLeft: 7,
@@ -359,8 +383,14 @@ const styles = StyleSheet.create({
         paddingBottom: 5
     },
     inputText: {
-        fontSize: 20,
+        fontSize: 18,
+        color: "rgb(54, 54, 56)"
         
+    },
+    inputDetails:{
+        minHeight: 100,
+        textAlignVertical: "top",
+        flexWrap: "nowrap"
     },
     //TAGS
     centeredView:{
@@ -387,9 +417,7 @@ const styles = StyleSheet.create({
         elevation: 2
     },
     buttonTag:{
-        backgroundColor: "#FFF",
-        borderRadius: 18,
-        padding: 20
+
     },
     //PRIORITY
     priorityContainer: {
@@ -408,12 +436,17 @@ const styles = StyleSheet.create({
     //DATE
     dateContainer:{
         borderRadius: 20,
-        backgroundColor: "#FFF",
-        padding: 10,
+        backgroundColor: "#F5F7FA",
+        
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems:"center"
     },
+    inputDate:{
+        fontSize: 18,
+    },
+
+    //ADD
     addButton: {
         backgroundColor: "#3B82F6",
         borderRadius: 20,
@@ -444,14 +477,9 @@ const styles = StyleSheet.create({
         fontWeight: 400,
     },
     containerAddOrCancel:{
-        marginTop: 10,
+        //marginTop: 10,
     },
-    containerConfirmButton: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginLeft: 5,
-        marginRight: 5,
-        
+    containerConfirmButton: {        
     },
     
 })
