@@ -25,6 +25,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { StackParamsList } from "../../routes/app.routes";
+import TagButtons from "../../components/New/TagButton";
 
 export default function New(){
     const navigation = useNavigation<NativeStackNavigationProp<StackParamsList>>();
@@ -40,17 +41,18 @@ export default function New(){
     const [showPicker, setShowPicker] = useState(false);
 
     const [tags, setTags] = useState([]);
+    const [tagName, setTagName] = useState([]);
     const [selectedTags, setSelectedTags] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [selectedValuePriority, setSelectedValuePriority] = useState(null)
+    const [selectedValuePriority, setSelectedValuePriority] = useState(null);
+    const [selectedValueTag, setSelectedValueTag] = useState(null);
 
     useEffect( () => {
 
         getTags()
 
     }, [modalVisible])
-
         
     //GET TAGS
     async function getTags() {
@@ -63,9 +65,10 @@ export default function New(){
                 (tag) => tag.userId === user.id
             );
             setTags(tagsByUser)
-            
+
             //LIST NAME TAGS
             const tagName = tagsByUser.map((tag) => tag.name)
+            setTagName(tagName)
             console.log(tagName)
         }
         catch {
@@ -74,14 +77,22 @@ export default function New(){
     }
 
     const renderTags = ({ item }) => (
-    <View style={styles.container}>
         <View>
             <TouchableOpacity>
-                <Text>{item.name}</Text>
+                <View style={styles.tagsList}>
+                    <Text>{item.name}</Text>
+                </View>
             </TouchableOpacity>
         </View>
-    </View>
     );
+
+    //FUNCTION TAGS
+    const handleTagsDefault = (value) => {
+        setSelectedValueTag(value);
+    }
+    function handleTagsCreated() {
+        setModalVisible(true);
+    }
 
     //FUNCTIONS DATE
     const toggleDatePicker = () => {
@@ -140,7 +151,8 @@ export default function New(){
             console.log(error);
             
         }
-        
+
+
     }
     return(
         <SafeAreaView style={styles.container}>
@@ -241,63 +253,66 @@ export default function New(){
 
 
                                     </View>
-                                </View>
+                                </View>                                
+
+                                <View style={styles.containerTags}>
+                                    <View style={{marginBottom: 8}}>
+                                        <TouchableOpacity
+                                        style={styles.buttonTag}
+                                        onPress={() => setModalVisible(true)}>
+                                            <Text style={styles.inputText}>Tags</Text>
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View>
+                                        <View style={styles.tagsList}>
+
+                                            <TagButtons
+                                            toggleTags={ () => handleTagsDefault("Work") }
+                                            isSelectedTag={selectedValueTag === "Work"}
+                                            labelTag={"Work"}
+                                            bgColorButtonActive= {'rgb(52, 199, 89)'}
+                                            bgColorButton= {'rgba(52, 199, 89, 0.150)'}
+                                            />
+                                            <TagButtons
+                                            toggleTags={ () => handleTagsDefault("Personal") }
+                                            isSelectedTag={selectedValueTag === "Personal"}
+                                            labelTag={"Personal"}
+                                            bgColorButtonActive= {'rgb(0, 122, 255)'}
+                                            bgColorButton= {'rgba(0, 122, 255, 0.150)'}
+                                            />
+                                            <TagButtons
+                                            toggleTags={ () => handleTagsDefault("Urgency") }
+                                            isSelectedTag={selectedValueTag === "Urgency"}
+                                            labelTag={"Urgency"}
+                                            bgColorButtonActive= {'rgb(255, 59, 48)'}
+                                            bgColorButton= {'rgba(255, 59, 48, 0.150)'}
+                                            />
+                                            <TagButtons
+                                            toggleTags={handleTagsCreated}
+                                            isSelectedTag={selectedValueTag === "Others..."}
+                                            labelTag={"Others..."}
+                                            bgColorButtonActive= {'rgb(142, 142, 147)'}
+                                            bgColorButton= {'rgba(142, 142, 147, 0.150)'}
+                                            />
+
+                                        </View>    
+                                    </View>
+                                    
+                                <ModalTag
+                                modalVisible={modalVisible}
+                                setModalVisible={setModalVisible}
+                                tags={tags}
+                                />
 
                                 
-
-                                <View>
-
-                                <Modal
-                                visible={modalVisible}
-                                onRequestClose={() => setModalVisible(!modalVisible)}
-                                animationType="slide"
-                                >
-                                        <FlatList
-                                        data={tags}
-                                        keyExtractor={(item) => item.id}
-                                        renderItem={renderTags}
-                                        />
-                                        
-
-                                            <View style={styles.containerAddOrCancel}>
-                                                <View style={styles.containerConfirmButton}>    
-                                                    <TouchableOpacity
-                                                    onPress={() => setModalVisible(false)}
-                                                    style={styles.cancelButton}>
-                                                        <View>
-                                                            <Text style={styles.cancelButtonText}>
-                                                                Cancel
-                                                            </Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                    
-                                                    <TouchableOpacity
-                                                    onPress={() => setModalVisible(false)}
-                                                    style={styles.addButton}>                                                
-                                                        <View>
-                                                            <Text style={styles.cancelButtonText}>
-                                                                Insert
-                                                            </Text>
-                                                        </View>
-                                                    </TouchableOpacity>
-                                                </View>
-                                            </View>
-                                </Modal>
-
-                                <View>
-                                    <TouchableOpacity
-                                    style={styles.buttonTag}
-                                    onPress={() => setModalVisible(true)}>
-                                        <Text style={styles.inputText}>Tags</Text>
-                                    </TouchableOpacity>
-                                </View>
                         </View>
                     </View>
                
 
                         <View>
                             <View>
-                                <Text style={styles.textInputLabel}>Priority</Text>
+                                <Text style={styles.inputText}>Priority</Text>
                             </View>
                                 <View style={styles.priorityContainer}>
                                     <PriorityButtons
@@ -340,10 +355,16 @@ export default function New(){
 
 
 const styles = StyleSheet.create({
+
+    text: { 
+        fontSize: 20, 
+        fontWeight: 'bold', 
+        color: '#333',
+    },
     container: {
         flex: 1,
         padding: 20,
-        backgroundColor: "#FFF"
+        backgroundColor: "#FFF",
     },
     header:{
         flexDirection: "row",
@@ -353,6 +374,7 @@ const styles = StyleSheet.create({
         marginLeft: 6,
         marginBottom: 22
     },
+
         
     //DEFAULT STYLES
     titles: {
@@ -371,7 +393,7 @@ const styles = StyleSheet.create({
         fontWeight: 400,
     },
     inputContainer:{
-        backgroundColor: "#F5F7FA",
+        backgroundColor: "rgb(242, 242, 247)",
         borderRadius: 11,
         
         //marginTop: 8,
@@ -383,8 +405,9 @@ const styles = StyleSheet.create({
         paddingBottom: 5
     },
     inputText: {
-        fontSize: 18,
-        color: "rgb(54, 54, 56)"
+        fontSize: 20,
+        fontWeight: 400,
+        color: "rgb(28, 28, 30)",
         
     },
     inputDetails:{
@@ -396,7 +419,7 @@ const styles = StyleSheet.create({
     centeredView:{
         flex: 1,
         margin: 20,
-        backgroundColor: "#F5F7FA"
+        backgroundColor: "rgb(229, 229, 234)"
     },
     outerView:{
         backgroundColor: "#3f403f97",
@@ -419,28 +442,44 @@ const styles = StyleSheet.create({
     buttonTag:{
 
     },
+    containerTags:{
+        marginTop: 13,
+        marginBottom: 26
+    },
+    tagsList:{
+        flexDirection:"row",
+        gap: 15,
+        flexWrap: "wrap"
+    },
+    buttonTagContainer:{
+        paddingRight: 15,
+        paddingLeft: 12,
+        paddingTop: 5,
+        paddingBottom: 5,
+        //backgroundColor: "rgb(229, 229, 234)",
+        borderRadius: 10
+    },
+    textTagButton: {
+        fontSize: 20,
+    },
     //PRIORITY
     priorityContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
         borderRadius: 18,
-        backgroundColor: "#E2E8F0",
+        //backgroundColor: "rgb(242, 242, 247)",
         marginTop: 8,
         marginBottom: 28,
-        paddingRight: 7,
-        paddingLeft: 7,
-        paddingTop: 5,
-        paddingBottom: 5
-        
+        gap: 15
     },
     //DATE
     dateContainer:{
         borderRadius: 20,
-        backgroundColor: "#F5F7FA",
+        backgroundColor: "rgb(235, 235, 240)",
         
         flexDirection: "row",
         justifyContent: "space-between",
-        alignItems:"center"
+        alignItems:"center",
     },
     inputDate:{
         fontSize: 18,

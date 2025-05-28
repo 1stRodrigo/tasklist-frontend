@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         borderRadius: 18,
-        backgroundColor: "#E2E8F0",
+        backgroundColor: "rgb(242, 242, 247)",
         marginTop: 8,
         marginBottom: 28,
         paddingRight: 7,
@@ -38,18 +38,18 @@ const styles = StyleSheet.create({
     buttonFilter: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: "#E2E8F0"
+        backgroundColor: "rgb(242, 242, 247)",
+        borderRadius: 18
     },
     filterText:{
-        fontSize: 22,
-        fontWeight: 600,
-        color: "#2D3748", //inactive
+        fontSize: 20,
+
+        color: "rgb(142, 142, 147)", //inactive
         padding: 9,
     },
     filterTextActive:{
-        fontSize: 22,
-        fontWeight: 600,
-        color: "#718096", //active
+        fontSize: 20,
+        color: "rgb(0, 122, 255)", //active
         padding: 9,
     }
 })
