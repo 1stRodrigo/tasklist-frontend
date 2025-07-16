@@ -13,6 +13,8 @@ import {
     FlatList
 } from "react-native"
 
+import { Colors } from "../../styles/Colors";
+import { FontSizes, Spacing, FontWeights, BorderRadius } from "../../styles/Typography/typography"; 
 import { api } from "../../services/api";
 import { AuthContext } from "../../contexts/AuthContext";
 
@@ -161,10 +163,10 @@ export default function New(){
                         <View style={{flexDirection: "row", alignItems: "center", gap: 15}}>
                             
                             <TouchableOpacity>
-                                <Ionicons name="arrow-back-outline" size={26}/>
+                                <Ionicons name="arrow-back-outline" size={FontSizes.button}/>
                             </TouchableOpacity>
                             
-                            <Text style={styles.titles}>Add Task</Text>
+                            <Text style={styles.title}>Add Task</Text>
                         </View>
 
                         <View>
@@ -248,7 +250,7 @@ export default function New(){
                                     )}
 
                                     <TouchableOpacity onPress={toggleDatePicker}>
-                                        <Ionicons name="chevron-down-outline" size={26} color="#F5F7FA " />
+                                        <Ionicons name="chevron-down-outline" size={FontSizes.headline} color={Colors.mediumGray} />
                                     </TouchableOpacity>
 
 
@@ -256,9 +258,8 @@ export default function New(){
                                 </View>                                
 
                                 <View style={styles.containerTags}>
-                                    <View style={{marginBottom: 8}}>
+                                    <View style={{marginBottom: Spacing.s}}>
                                         <TouchableOpacity
-                                        style={styles.buttonTag}
                                         onPress={() => setModalVisible(true)}>
                                             <Text style={styles.inputText}>Tags</Text>
                                         </TouchableOpacity>
@@ -271,29 +272,29 @@ export default function New(){
                                             toggleTags={ () => handleTagsDefault("Work") }
                                             isSelectedTag={selectedValueTag === "Work"}
                                             labelTag={"Work"}
-                                            bgColorButtonActive= {'rgb(52, 199, 89)'}
-                                            bgColorButton= {'rgba(52, 199, 89, 0.150)'}
+                                            bgColorButtonActive= {Colors.softOrange}
+                                            bgColorButton= {Colors.white}
                                             />
                                             <TagButtons
                                             toggleTags={ () => handleTagsDefault("Personal") }
                                             isSelectedTag={selectedValueTag === "Personal"}
                                             labelTag={"Personal"}
-                                            bgColorButtonActive= {'rgb(0, 122, 255)'}
-                                            bgColorButton= {'rgba(0, 122, 255, 0.150)'}
+                                            bgColorButtonActive= {Colors.green}
+                                            bgColorButton= {Colors.white}
                                             />
                                             <TagButtons
                                             toggleTags={ () => handleTagsDefault("Urgency") }
                                             isSelectedTag={selectedValueTag === "Urgency"}
                                             labelTag={"Urgency"}
-                                            bgColorButtonActive= {'rgb(255, 59, 48)'}
-                                            bgColorButton= {'rgba(255, 59, 48, 0.150)'}
+                                            bgColorButtonActive= {Colors.softRed}
+                                            bgColorButton= {Colors.white}
                                             />
                                             <TagButtons
                                             toggleTags={handleTagsCreated}
                                             isSelectedTag={selectedValueTag === "Others..."}
                                             labelTag={"Others..."}
-                                            bgColorButtonActive= {'rgb(142, 142, 147)'}
-                                            bgColorButton= {'rgba(142, 142, 147, 0.150)'}
+                                            bgColorButtonActive= {Colors.mediumGray}
+                                            bgColorButton= {Colors.white}
                                             />
 
                                         </View>    
@@ -356,35 +357,30 @@ export default function New(){
 
 const styles = StyleSheet.create({
 
-    text: { 
-        fontSize: 20, 
-        fontWeight: 'bold', 
-        color: '#333',
+    title: {
+        color: Colors.black,
+        fontSize: FontSizes.largeTitle,
+        fontWeight: FontWeights.bold
     },
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: "#FFF",
+        padding: Spacing.m,
+        backgroundColor: Colors.white,
     },
     header:{
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        marginTop: 25,
-        marginLeft: 6,
-        marginBottom: 22
+        marginTop: Spacing.xl,
+        marginBottom: Spacing.l
     },
 
         
     //DEFAULT STYLES
-    titles: {
-        fontSize: 30,
-        fontWeight: 700 
-    },
 
     textButtonDefault:{
-        color: "rgb(0, 122, 255)",
-        fontSize: 20,
+        color: Colors.appleBlue,
+        fontSize: FontSizes.button,
         fontWeight: 400,
     },
 
@@ -393,23 +389,20 @@ const styles = StyleSheet.create({
         fontWeight: 400,
     },
     inputContainer:{
-        backgroundColor: "rgb(242, 242, 247)",
-        borderRadius: 11,
+        backgroundColor: Colors.lightGray,
+        borderRadius: BorderRadius.l,
+        marginBottom: Spacing.l,
         
-        //marginTop: 8,
-        marginBottom: 15,
-        
-        paddingRight: 7,
-        paddingLeft: 7,
-        paddingTop: 5,
-        paddingBottom: 5
+        paddingRight: Spacing.s,
+        paddingLeft: Spacing.s,
+        paddingTop: Spacing.xxs,
+        paddingBottom: Spacing.xs
     },
     inputText: {
-        fontSize: 20,
-        fontWeight: 400,
-        color: "rgb(28, 28, 30)",
-        
+        fontSize: FontSizes.button,
+        color: Colors.black,
     },
+
     inputDetails:{
         minHeight: 100,
         textAlignVertical: "top",
@@ -439,16 +432,13 @@ const styles = StyleSheet.create({
         shadowRadius: 4,
         elevation: 2
     },
-    buttonTag:{
-
-    },
     containerTags:{
-        marginTop: 13,
-        marginBottom: 26
+        marginTop: Spacing.xs,
+        marginBottom: Spacing.xl
     },
     tagsList:{
         flexDirection:"row",
-        gap: 15,
+        gap: Spacing.m,
         flexWrap: "wrap"
     },
     buttonTagContainer:{
@@ -466,16 +456,15 @@ const styles = StyleSheet.create({
     priorityContainer: {
         flexDirection: "row",
         justifyContent: "space-around",
-        borderRadius: 18,
+        //borderRadius: BorderRadius.l,
         //backgroundColor: "rgb(242, 242, 247)",
-        marginTop: 8,
-        marginBottom: 28,
-        gap: 15
+        marginTop: Spacing.s,
+        marginBottom: Spacing.xl,
+        gap: Spacing.m
     },
     //DATE
     dateContainer:{
-        borderRadius: 20,
-        backgroundColor: "rgb(235, 235, 240)",
+        backgroundColor: Colors.lightGray,
         
         flexDirection: "row",
         justifyContent: "space-between",

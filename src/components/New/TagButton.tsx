@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { FontSizes, Spacing, FontWeights, BorderRadius } from "../../styles/Typography/typography";
+import { Colors } from "../../styles/Colors";
 
 export default function TagButtons({toggleTags, isSelectedTag, labelTag, bgColorButtonActive, bgColorButton}){
 
@@ -8,17 +10,15 @@ export default function TagButtons({toggleTags, isSelectedTag, labelTag, bgColor
         <TouchableOpacity
         onPress={toggleTags}
         >
-            <View style={[ 
-                styles.buttonTagContainer,
-                isSelectedTag ? {backgroundColor: bgColorButtonActive} : {backgroundColor: bgColorButton}
-                ]}>
+            <View style={
+                styles.buttonTagContainer}>
 
                 <Text style={[
                 isSelectedTag
                 ?
-                {color: 'rgb(255, 255, 255)', fontSize: 20}
+                {color: Colors.mediumGray, fontSize: 20, fontWeight:FontWeights.normal }
                 :
-                {color: bgColorButtonActive, fontSize: 20}
+                {color: Colors.mediumGray, fontSize: FontSizes.button, fontWeight: FontWeights.normal }
                 ]
                 }>{labelTag}</Text>
             </View>

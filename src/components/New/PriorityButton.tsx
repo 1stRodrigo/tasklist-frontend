@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
+import { FontSizes, FontWeights, Spacing, BorderRadius } from "../../styles/Typography/typography";
+import { Colors } from "../../styles/Colors";
+
 
 export default function PriorityButtons({ togglePriority, isSelectedPriority, labelPriority }){
 
@@ -26,7 +29,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-around",
         borderRadius: 18,
-        backgroundColor: "rgb(242, 242, 247)",
+        //backgroundColor: "rgb(242, 242, 247)",
         marginTop: 8,
         marginBottom: 28,
         paddingRight: 7,
@@ -38,18 +41,17 @@ const styles = StyleSheet.create({
     buttonFilter: {
         flex: 1,
         alignItems: "center",
-        backgroundColor: "rgb(242, 242, 247)",
-        borderRadius: 18
+        backgroundColor: Colors.white,
+        borderRadius: BorderRadius.m
     },
     filterText:{
-        fontSize: 20,
-
-        color: "rgb(142, 142, 147)", //inactive
+        fontSize: FontSizes.button,
+        color: Colors.mediumGray, //inactive
         padding: 9,
     },
     filterTextActive:{
         fontSize: 20,
-        color: "rgb(0, 122, 255)", //active
+        color: Colors.mediumGray, //active
         padding: 9,
     }
 })
