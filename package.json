@@ -8,7 +8,9 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "react-devtools": "react-devtools"
+    "react-devtools": "react-devtools",
+    "lint": "eslint \"{src,apps,libs}/**/*.ts\" \"{src,apps,libs}/**/*.tsx\" --fix",
+    "format": "prettier --write \"{src,apps,libs}/**/*.{js,jsx,ts,tsx,json,css,md}\""
   },
   "dependencies": {
     "@expo-google-fonts/inter": "^0.3.0",
@@ -37,6 +39,12 @@
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
     "@types/react-native": "^0.73.0",
+    "@typescript-eslint/eslint-plugin": "^8.37.0",
+    "@typescript-eslint/parser": "^8.37.0",
+    "eslint": "^9.31.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-prettier": "^5.5.1",
+    "prettier": "^3.6.2",
     "react-devtools": "^6.1.5",
     "typescript": "^5.3.3"
   },
