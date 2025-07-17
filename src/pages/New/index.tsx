@@ -176,7 +176,7 @@ export default function New(){
                         </View>
                     </View>
 
-                    <View>
+                    <View>  
                         <View>
 
                             <View style={styles.inputContainer}>
