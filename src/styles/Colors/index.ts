@@ -6,6 +6,7 @@ export const Colors = {
   black: '#000000',
   mediumGray: '#8E8E93',
   lightGray: '#E5E5EA',
+  softGray: '#F0F0F0',
 
   // Ações e Interatividade
   appleBlue: '#007AFF',
